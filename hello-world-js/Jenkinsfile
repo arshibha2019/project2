@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    environment{
+        TOMCAT = 'C:/Program Files/Apache Software Foundation/Tomcat 10.1/webapps'
+        APP_NAME = 'helloworl'
+
+    }
+
+    stages{
+        stage('checkout'){
+            steps{
+                git branch :'main', url: 'https://github.com/arshibha2019/project2.git'
+            }
+        }
+
+        stage('deploy to tomcat'){
+            steps{
+              bat """
+              cd hello-world-js
+              rmdir /s /q "%TOMCAT%\\%APP_NAME%"
+              mkdir "%TOMCAT%\\%APP_NAME%"
+              xcopy * "%TOMCAT%\\%APP_NAME%" /E /I /Y
+
+              net stop Tomcat10
+              net start Tomcat10
+              """
+            }
+        }
+    }
+
+    
+}
